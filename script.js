@@ -42,7 +42,7 @@ function renderizarPontuacao() {
 
 async function atualizarPonto(index, pilar, valor) {
     if(confirm(`Confirmar +${valor} estrela(s) para ${participantes[index].nome} em ${pilar}?`)) {
-        participantes[index].pontos += valor; // Adiciona o peso correto (1, 2 ou 3)
+        participantes[index].pontos += valor; 
         document.getElementById('som-moeda').play();
         renderizarPontuacao();
 
@@ -61,10 +61,7 @@ function renderizarRanking() {
     const ordenados = [...participantes].sort((a, b) => b.pontos - a.pontos);
 
     ordenados.forEach(p => {
-        // Gera a coluna de blocos de estrelas acima da foto
         let estrelasHTML = '<div style="display: flex; flex-direction: column-reverse; align-items: center;">';
-        
-        // Limite visual de blocos para não ultrapassar o topo da tela
         const limiteVisual = Math.min(p.pontos, 40); 
         
         for(let i = 0; i < limiteVisual; i++) {
@@ -72,14 +69,14 @@ function renderizarRanking() {
         }
         estrelasHTML += '</div>';
 
-        // Monta a coluna: Estrelas -> Foto -> Nome -> Pontos (embaixo)
+        // ALTERADO: Estrutura da info-ranking para forçar quebra de linha e responsividade
         podio.innerHTML += `
             <div class="coluna-ranking">
                 ${estrelasHTML}
                 <img src="fotos/${p.nome}.png" class="foto-ranking" onerror="this.src='https://via.placeholder.com/85?text=S/F'">
-                <div class="info-ranking">
-                    <div class="nome-ranking">${p.nome}</div>
-                    <div class="total-estrelas">${p.pontos} ⭐</div>
+                <div class="info-ranking" style="width: 100%; text-align: center; word-wrap: break-word;">
+                    <div class="nome-ranking" style="display: block; margin-top: 10px;">${p.nome}</div>
+                    <div class="total-estrelas" style="display: block; margin-top: 5px;">${p.pontos} ⭐</div>
                 </div>
             </div>`;
     });
@@ -90,7 +87,8 @@ function trocarTela() {
     const ranking = document.getElementById('tela-ranking');
     const btn = document.getElementById('btn-nav');
 
-    if (ranking.style.display === 'none') {
+    // ALTERADO: Pequeno ajuste na lógica para garantir o funcionamento no primeiro clique
+    if (ranking.style.display === 'none' || ranking.style.display === '') {
         renderizarRanking();
         ranking.style.display = 'block';
         principal.style.display = 'none';

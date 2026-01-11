@@ -12,7 +12,7 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    overflow-x: hidden;
+    overflow-x: hidden; /* Evita rolagem lateral no corpo da página */
 }
 
 /* --- TOPO --- */
@@ -21,7 +21,7 @@ header h1 {
     background: var(--dourado-gradiente);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-size: 3rem;
+    font-size: clamp(1.5rem, 8vw, 3rem); /* Fonte diminui em telas menores */
     margin: 20px 0;
     text-transform: uppercase;
     filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
@@ -32,7 +32,7 @@ header h1 {
     padding: 10px;
     max-width: 98%;
     margin: auto;
-    padding-bottom: 120px; /* Espaço para o rodapé */
+    padding-bottom: 120px;
 }
 
 .linha-participante {
@@ -43,13 +43,14 @@ header h1 {
     padding: 12px;
     border-radius: 12px;
     border-left: 5px solid #bf953f;
-    gap: 15px;
+    gap: 10px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    overflow-x: auto; /* Permite rolar os botões no celular se necessário */
 }
 
 .foto { 
-    width: 60px; 
-    height: 60px; 
+    width: 50px; 
+    height: 50px; 
     border-radius: 50%; 
     border: 2px solid #daa520; 
     flex-shrink: 0; 
@@ -57,10 +58,10 @@ header h1 {
 }
 
 .nome { 
-    width: 140px; 
+    width: 120px; 
     font-weight: bold; 
     flex-shrink: 0; 
-    font-size: 1rem;
+    font-size: 0.9rem;
     text-shadow: 1px 1px 2px black;
 }
 
@@ -68,89 +69,99 @@ header h1 {
     display: flex;
     gap: 6px;
     flex-grow: 1;
-    justify-content: flex-start;
 }
 
 .btn-ponto {
-    flex: 1;
+    min-width: 80px; /* Garante que o texto do botão não suma */
     background: #003366;
     border: 1px solid #bf953f;
     color: white;
-    padding: 10px 2px;
+    padding: 8px 4px;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     text-transform: uppercase;
     font-weight: bold;
-    transition: all 0.2s ease;
 }
 
-.btn-ponto:hover { 
-    background: var(--dourado-gradiente); 
-    color: black; 
-    transform: scale(1.05);
-}
-
-/* --- TELA DE RANKING (O Pódio) --- */
+/* --- TELA DE RANKING (Ajustada para Mobile) --- */
 .titulo-ranking {
     text-align: center;
     background: var(--dourado-gradiente);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-size: 2.5rem;
-    margin: 40px 0;
+    font-size: clamp(1.2rem, 6vw, 2.5rem);
+    margin: 20px 0;
     text-transform: uppercase;
 }
 
 .podio-container {
     display: flex;
-    justify-content: center;
-    align-items: flex-end; /* Alinha tudo no "chão" */
-    gap: 25px;
-    height: 65vh; /* Altura para as colunas de estrelas */
-    padding: 20px;
+    justify-content: flex-start; /* Alinha no início para o scroll funcionar */
+    align-items: flex-end; 
+    gap: 20px;
+    height: 60vh; 
+    padding: 20px 40px;
     margin-bottom: 100px;
+    
+    /* ROLAGEM HORIZONTAL */
+    overflow-x: auto; 
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* Melhora o deslize no iPhone */
+}
+
+/* Estilização da barra de rolagem para ficar discreta */
+.podio-container::-webkit-scrollbar {
+    height: 6px;
+}
+.podio-container::-webkit-scrollbar-thumb {
+    background: #bf953f;
+    border-radius: 10px;
 }
 
 .coluna-ranking {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 110px;
+    min-width: 100px; /* Mantém a largura fixa dos alunos no ranking */
+    flex-shrink: 0; /* Não deixa o aluno ser "esmagado" */
     transition: 0.5s;
 }
 
-/* Gráfico de Estrelas (Empilhamento) */
 .estrela-bloco {
-    width: 45px;
-    height: 12px;
+    width: 35px;
+    height: 10px;
     background: var(--dourado-gradiente);
-    margin-bottom: 4px;
-    border-radius: 3px;
-    box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+    margin-bottom: 3px;
+    border-radius: 2px;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.4);
     animation: crescer 0.8s ease-out;
 }
 
 .foto-ranking {
-    width: 85px;
-    height: 85px;
+    width: 70px;
+    height: 70px;
     border: 3px solid gold;
     border-radius: 50%;
     margin-top: 10px;
     object-fit: cover;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 
 .nome-ranking {
     margin-top: 10px;
     font-weight: bold;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     text-align: center;
+    width: 100%;
+    white-space: nowrap; /* Nome em uma linha */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Abrevia nomes muito longos */
 }
 
 .total-estrelas {
     color: #fcf6ba;
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     font-weight: bold;
     margin-top: 5px;
 }
@@ -160,38 +171,45 @@ footer {
     position: fixed; 
     bottom: 0; 
     width: 100%; 
-    height: 90px; 
+    height: 80px; 
     background: rgba(0, 12, 26, 0.95);
     backdrop-filter: blur(5px);
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
-    padding: 0 40px; 
+    padding: 0 20px; 
     box-sizing: border-box; 
     border-top: 1px solid #bf953f;
     z-index: 1000;
 }
 
+.logo {
+    height: 40px; /* Logos menores para caber o botão central */
+    width: auto;
+}
+
 .btn-central { 
     background: var(--dourado-gradiente); 
     border: none; 
-    padding: 15px 40px; 
+    padding: 10px 20px; 
     font-weight: bold; 
-    border-radius: 40px; 
+    border-radius: 30px; 
     cursor: pointer; 
-    font-size: 1.1rem;
+    font-size: 0.8rem;
     color: #1a1a1a;
     text-transform: uppercase;
-    box-shadow: 0 0 15px rgba(191, 149, 63, 0.4);
 }
 
-.btn-central:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 20px rgba(191, 149, 63, 0.6);
-}
-
-/* Animação para o gráfico subir */
+/* --- ANIMAÇÕES --- */
 @keyframes crescer {
     from { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
     to { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
+}
+
+/* Ajustes para telas muito pequenas (iPhone SE, etc) */
+@media (max-width: 400px) {
+    .coluna-ranking { min-width: 85px; }
+    .foto-ranking { width: 60px; height: 60px; }
+    footer { padding: 0 10px; }
+    .btn-central { padding: 8px 15px; font-size: 0.7rem; }
 }
