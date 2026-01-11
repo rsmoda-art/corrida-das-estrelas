@@ -13,7 +13,7 @@ function renderizarPontuacao() {
     participantes.forEach((p, index) => {
         lista.innerHTML += `
             <div class="linha-participante">
-                <img src="https://via.placeholder.com/60" class="foto">
+                <img src="fotos/${p.nome}.jpg" class="foto" onerror="this.src='https://via.placeholder.com/60?text=S/F'">
                 <div class="nome"><strong>${p.nome}</strong></div>
                 <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Presença')">PRESENÇA</button>
                 <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Bíblia')">BÍBLIA</button>
@@ -53,7 +53,7 @@ function renderizarRanking() {
         podio.innerHTML += `
             <div class="coluna-ranking">
                 ${estrelas}
-                <img src="https://via.placeholder.com/60" class="foto">
+                <img src="fotos/${p.nome}.jpg" class="foto" onerror="this.src='https://via.placeholder.com/60?text=S/F'">
                 <div style="font-size:12px; font-weight:bold">${p.nome}</div>
                 <div style="color:gold">${p.pontos} ⭐</div>
             </div>`;

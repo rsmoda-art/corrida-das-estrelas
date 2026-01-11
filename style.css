@@ -5,7 +5,8 @@
 }
 
 body {
-    background-color: var(--azul-marinho);
+    background: radial-gradient(circle, #001f3f 0%, #000c1a 100%);
+    background-attachment: fixed; /* O fundo não mexe quando rolar a página */
     color: var(--branco-gelo);
     font-family: 'Arial', sans-serif;
     margin: 0;
