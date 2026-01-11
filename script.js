@@ -1,6 +1,7 @@
 const URL_API = "https://script.google.com/macros/s/AKfycbzAmYptdFkB4lFZ08dCBVkMZDAXYQS7E4h8JPzHgRaygF20y3daOHl-633DQClmYShVjA/exec"; 
 let participantes = [];
 
+// 1. CARGA INICIAL
 async function carregarDados() {
     try {
         const response = await fetch(URL_API);
@@ -14,9 +15,37 @@ async function carregarDados() {
         }
     } catch (error) {
         console.error("Erro ao carregar:", error);
-        document.getElementById('lista-participantes').innerText = "Erro ao conectar com o Google Sheets. Verifique a URL e as permissões.";
+        document.getElementById('lista-participantes').innerText = "Erro ao conectar com o Google Sheets.";
     }
 }
+
+// 2. ATUALIZAÇÃO EM TEMPO REAL (Busca silenciosa em segundo plano)
+async function buscarAtualizacoes() {
+    try {
+        const response = await fetch(URL_API);
+        if (response.ok) {
+            const novosDados = await response.json();
+            
+            // Verifica se houve mudança nos pontos para evitar "piscar" a tela sem necessidade
+            if (JSON.stringify(novosDados) !== JSON.stringify(participantes)) {
+                participantes = novosDados;
+                
+                // Atualiza a tela que estiver visível no momento
+                const rankingVisivel = document.getElementById('tela-ranking').style.display === 'block';
+                if (rankingVisivel) {
+                    renderizarRanking();
+                } else {
+                    renderizarPontuacao();
+                }
+            }
+        }
+    } catch (error) {
+        console.warn("Falha na sincronização em tempo real");
+    }
+}
+
+// Configura para verificar a planilha a cada 10 segundos
+setInterval(buscarAtualizacoes, 10000);
 
 function renderizarPontuacao() {
     const lista = document.getElementById('lista-participantes');
@@ -56,8 +85,6 @@ async function atualizarPonto(index, pilar, valor) {
 function renderizarRanking() {
     const podio = document.getElementById('podio');
     podio.innerHTML = '';
-    
-    // Organiza do MAIOR para o MENOR (Esquerda para Direita)
     const ordenados = [...participantes].sort((a, b) => b.pontos - a.pontos);
 
     ordenados.forEach(p => {
@@ -69,7 +96,6 @@ function renderizarRanking() {
         }
         estrelasHTML += '</div>';
 
-        // ALTERADO: Estrutura da info-ranking para forçar quebra de linha e responsividade
         podio.innerHTML += `
             <div class="coluna-ranking">
                 ${estrelasHTML}
@@ -87,7 +113,6 @@ function trocarTela() {
     const ranking = document.getElementById('tela-ranking');
     const btn = document.getElementById('btn-nav');
 
-    // ALTERADO: Pequeno ajuste na lógica para garantir o funcionamento no primeiro clique
     if (ranking.style.display === 'none' || ranking.style.display === '') {
         renderizarRanking();
         ranking.style.display = 'block';
