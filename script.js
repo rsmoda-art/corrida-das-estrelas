@@ -26,24 +26,27 @@ function renderizarPontuacao() {
             <div class="linha-participante">
                 <img src="fotos/${p.nome}.png" class="foto" onerror="this.src='https://via.placeholder.com/60?text=S/F'">
                 <div class="nome"><strong>${p.nome}</strong></div>
-                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Presença')">PRESENÇA</button>
-                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Bíblia')">BÍBLIA</button>
-                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Oferta')">OFERTA</button>
-                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Pergunta')">PERGUNTA</button>
-                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Apoio')">APOIO</button>
+                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Presença', 1)">PRESENÇA (1)</button>
+                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Bíblia', 2)">BÍBLIA (2)</button>
+                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Revista', 2)">REVISTA (2)</button>
+                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Oferta', 2)">OFERTA (2)</button>
+                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Visitante', 3)">VISITANTES (3)</button>
+                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Aluno Efetivo', 2)">ALUNO EFETIVO (2)</button>
+                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Pergunta Surpresa', 3)">PERGUNTA (3)</button>
+                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Apoio', 1)">APOIO (1)</button>
             </div>`;
     });
 }
 
-async function atualizarPonto(index, pilar) {
-    if(confirm(`Adicionar estrela para ${participantes[index].nome} em ${pilar}?`)) {
-        participantes[index].pontos++;
+async function atualizarPonto(index, pilar, valor) {
+    if(confirm(`Adicionar ${valor} estrela(s) para ${participantes[index].nome} em ${pilar}?`)) {
+        // Agora somamos o valor específico do critério
+        participantes[index].pontos += valor;
         document.getElementById('som-moeda').play();
         
-        // Renderiza na tela imediatamente para ser rápido
         renderizarPontuacao();
 
-        // Envia para o Google Sheets
+        // Envia para o Google Sheets (a planilha receberá o novo total)
         await fetch(URL_API, {
             method: 'POST',
             body: JSON.stringify(participantes[index])
@@ -58,7 +61,9 @@ function renderizarRanking() {
 
     ordenados.forEach(p => {
         let estrelas = '';
-        for(let i=0; i<p.pontos; i++) {
+        // Mostra visualmente até 50 blocos para não quebrar o layout se tiverem muitos pontos
+        const limiteVisual = Math.min(p.pontos, 50); 
+        for(let i=0; i<limiteVisual; i++) {
             estrelas += `<div class="estrela-bloco"></div>`;
         }
         podio.innerHTML += `
