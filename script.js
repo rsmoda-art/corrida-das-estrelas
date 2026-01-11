@@ -56,21 +56,30 @@ async function atualizarPonto(index, pilar, valor) {
 function renderizarRanking() {
     const podio = document.getElementById('podio');
     podio.innerHTML = '';
-    const ordenados = [...participantes].sort((a, b) => a.pontos - b.pontos);
+    
+    // Organiza do MAIOR para o MENOR (Esquerda para Direita)
+    const ordenados = [...participantes].sort((a, b) => b.pontos - a.pontos);
 
     ordenados.forEach(p => {
-        let estrelas = '';
-        // Mostra visualmente até 50 blocos para não quebrar o layout se tiverem muitos pontos
-        const limiteVisual = Math.min(p.pontos, 50); 
-        for(let i=0; i<limiteVisual; i++) {
-            estrelas += `<div class="estrela-bloco"></div>`;
+        // Criar as estrelas acima da foto
+        let estrelasHTML = '<div style="display: flex; flex-direction: column-reverse; align-items: center;">';
+        
+        // Limite visual para não quebrar a tela se tiverem centenas de pontos
+        const limiteVisual = Math.min(p.pontos, 40); 
+        
+        for(let i = 0; i < limiteVisual; i++) {
+            estrelasHTML += `<div class="estrela-bloco"></div>`;
         }
+        estrelasHTML += '</div>';
+
         podio.innerHTML += `
             <div class="coluna-ranking">
-                ${estrelas}
-                <img src="fotos/${p.nome}.png" class="foto" onerror="this.src='https://via.placeholder.com/60?text=S/F'">
-                <div style="font-size:12px; font-weight:bold">${p.nome}</div>
-                <div style="color:gold">${p.pontos} ⭐</div>
+                ${estrelasHTML}
+                <img src="fotos/${p.nome}.png" class="foto" style="width: 80px; height: 80px;" onerror="this.src='https://via.placeholder.com/80?text=S/F'">
+                <div class="info-ranking">
+                    <span class="nome-ranking">${p.nome}</span>
+                    <span class="pontos-ranking">${p.pontos} ⭐</span>
+                </div>
             </div>`;
     });
 }
