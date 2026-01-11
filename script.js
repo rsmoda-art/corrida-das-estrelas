@@ -1,4 +1,4 @@
-const URL_API = "https://script.google.com/macros/s/SEQUENCIA_DE_CODIGO/exec"; 
+const URL_API = "https://script.google.com/u/0/home/projects/1PWtrIv-Y1m3Y9F7VT9hhIaQ3rzlCECfV-w_8RHD_NkmpWLfpXKsL7tcc/edit"; 
 let participantes = [];
 
 async function carregarDados() {
