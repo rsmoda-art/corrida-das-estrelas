@@ -1,4 +1,4 @@
-const URL_API = "https://script.google.com/u/0/home/projects/1PWtrIv-Y1m3Y9F7VT9hhIaQ3rzlCECfV-w_8RHD_NkmpWLfpXKsL7tcc/edit"; 
+const URL_API = "https://script.google.com/macros/s/AKfycbzAmYptdFkB4lFZ08dCBVkMZDAXYQS7E4h8JPzHgRaygF20y3daOHl-633DQClmYShVjA/exec"; 
 let participantes = [];
 
 async function carregarDados() {
