@@ -61,10 +61,10 @@ function renderizarRanking() {
     const ordenados = [...participantes].sort((a, b) => b.pontos - a.pontos);
 
     ordenados.forEach(p => {
-        // Criar as estrelas acima da foto
+        // Gera a coluna de blocos de estrelas acima da foto
         let estrelasHTML = '<div style="display: flex; flex-direction: column-reverse; align-items: center;">';
         
-        // Limite visual para não quebrar a tela se tiverem centenas de pontos
+        // Limite visual de blocos para não ultrapassar o topo da tela
         const limiteVisual = Math.min(p.pontos, 40); 
         
         for(let i = 0; i < limiteVisual; i++) {
@@ -72,13 +72,14 @@ function renderizarRanking() {
         }
         estrelasHTML += '</div>';
 
+        // Monta a coluna: Estrelas -> Foto -> Nome -> Pontos (embaixo)
         podio.innerHTML += `
             <div class="coluna-ranking">
                 ${estrelasHTML}
-                <img src="fotos/${p.nome}.png" class="foto" style="width: 80px; height: 80px;" onerror="this.src='https://via.placeholder.com/80?text=S/F'">
+                <img src="fotos/${p.nome}.png" class="foto-ranking" onerror="this.src='https://via.placeholder.com/85?text=S/F'">
                 <div class="info-ranking">
-                    <span class="nome-ranking">${p.nome}</span>
-                    <span class="pontos-ranking">${p.pontos} ⭐</span>
+                    <div class="nome-ranking">${p.nome}</div>
+                    <div class="total-estrelas">${p.pontos} ⭐</div>
                 </div>
             </div>`;
     });
