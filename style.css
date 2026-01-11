@@ -1,12 +1,72 @@
+:root {
+    --azul-marinho: #001f3f;
+    --dourado-gradiente: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+    --branco-gelo: #f4f4f4;
+}
+
+body {
+    background: radial-gradient(circle, #001f3f 0%, #000c1a 100%);
+    background-attachment: fixed;
+    color: var(--branco-gelo);
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header h1 {
+    text-align: center;
+    background: var(--dourado-gradiente);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 3rem;
+    margin: 20px 0;
+    text-transform: uppercase;
+}
+
+.container {
+    padding: 10px;
+    max-width: 100%; /* Ocupa a tela toda para caber os botões */
+    margin: auto;
+    padding-bottom: 100px;
+}
+
 .linha-participante {
-    display: grid;
-    /* Ajustado para 8 colunas de botões + foto e nome */
-    grid-template-columns: 70px 150px repeat(8, 1fr); 
+    display: flex; /* Mudamos para flex para melhor ajuste */
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    margin-bottom: 8px;
+    padding: 10px;
+    border-radius: 10px;
+    border-left: 5px solid #bf953f;
+    gap: 10px;
+}
+
+.foto { width: 60px; height: 60px; border-radius: 50%; border: 2px solid #daa520; flex-shrink: 0; }
+
+.nome { width: 150px; font-weight: bold; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; }
+
+.botoes-container {
+    display: flex;
     gap: 5px;
-    /* ... resto do código ... */
+    flex-grow: 1;
+    justify-content: space-between;
 }
 
 .btn-ponto {
-    padding: 5px 2px; /* Diminuído o preenchimento para caber tudo */
-    font-size: 0.65rem; /* Fonte levemente menor */
+    flex: 1; /* Faz todos os botões terem o mesmo tamanho */
+    background: #003366;
+    border: 1px solid #bf953f;
+    color: white;
+    padding: 8px 2px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.6rem; /* Fonte pequena para caber o nome */
+    text-transform: uppercase;
+    transition: 0.2s;
 }
+
+.btn-ponto:hover { background: gold; color: black; }
+
+/* Estilo do Ranking e Rodapé permanecem os mesmos */
+footer { position: fixed; bottom: 0; width: 100%; height: 80px; background: #000c1a; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; box-sizing: border-box; }
+.btn-central { background: var(--dourado-gradiente); border: none; padding: 12px 25px; font-weight: bold; border-radius: 30px; cursor: pointer; }

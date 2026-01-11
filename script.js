@@ -25,28 +25,27 @@ function renderizarPontuacao() {
         lista.innerHTML += `
             <div class="linha-participante">
                 <img src="fotos/${p.nome}.png" class="foto" onerror="this.src='https://via.placeholder.com/60?text=S/F'">
-                <div class="nome"><strong>${p.nome}</strong></div>
-                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Presença', 1)">PRESENÇA (1)</button>
-                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Bíblia', 2)">BÍBLIA (2)</button>
-                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Revista', 2)">REVISTA (2)</button>
-                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Oferta', 2)">OFERTA (2)</button>
-                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Visitante', 3)">VISITANTES (3)</button>
-                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Aluno Efetivo', 2)">ALUNO EFETIVO (2)</button>
-                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Pergunta Surpresa', 3)">PERGUNTA (3)</button>
-                <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Apoio', 1)">APOIO (1)</button>
+                <div class="nome">${p.nome}</div>
+                <div class="botoes-container">
+                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Presença', 1)">Presença (1)</button>
+                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Bíblia', 2)">Bíblia (2)</button>
+                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Revista', 2)">Revista (2)</button>
+                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Oferta', 2)">Oferta (2)</button>
+                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Visitantes', 3)">Visitantes (3)</button>
+                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Aluno Efetivo', 2)">Aluno Efetivo (2)</button>
+                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Pergunta', 3)">Pergunta (3)</button>
+                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Apoio', 1)">Apoio (1)</button>
+                </div>
             </div>`;
     });
 }
 
 async function atualizarPonto(index, pilar, valor) {
-    if(confirm(`Adicionar ${valor} estrela(s) para ${participantes[index].nome} em ${pilar}?`)) {
-        // Agora somamos o valor específico do critério
-        participantes[index].pontos += valor;
+    if(confirm(`Confirmar +${valor} estrela(s) para ${participantes[index].nome} em ${pilar}?`)) {
+        participantes[index].pontos += valor; // Adiciona o peso correto (1, 2 ou 3)
         document.getElementById('som-moeda').play();
-        
         renderizarPontuacao();
 
-        // Envia para o Google Sheets (a planilha receberá o novo total)
         await fetch(URL_API, {
             method: 'POST',
             body: JSON.stringify(participantes[index])
