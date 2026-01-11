@@ -2,9 +2,20 @@ const URL_API = "https://script.google.com/macros/s/SEQUENCIA_DE_CODIGO/exec";
 let participantes = [];
 
 async function carregarDados() {
-    const response = await fetch(URL_API);
-    participantes = await response.json();
-    renderizarPontuacao();
+    try {
+        const response = await fetch(URL_API);
+        if (!response.ok) throw new Error('Falha na rede');
+        participantes = await response.json();
+        
+        if (participantes.length === 0) {
+            document.getElementById('lista-participantes').innerText = "Nenhum jovem encontrado na planilha.";
+        } else {
+            renderizarPontuacao();
+        }
+    } catch (error) {
+        console.error("Erro ao carregar:", error);
+        document.getElementById('lista-participantes').innerText = "Erro ao conectar com o Google Sheets. Verifique a URL e as permissões.";
+    }
 }
 
 function renderizarPontuacao() {
