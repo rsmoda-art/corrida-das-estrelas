@@ -1,10 +1,10 @@
+
 :root {
     --azul-marinho: #001f3f;
     --azul-profundo: #000c1a;
     --dourado-gradiente: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
     --branco-gelo: #f4f4f4;
 }
-
 body {
     background: radial-gradient(circle, var(--azul-marinho) 0%, var(--azul-profundo) 100%);
     background-attachment: fixed;
@@ -14,7 +14,6 @@ body {
     padding: 0;
     overflow-x: hidden; /* Evita rolagem lateral no corpo da página */
 }
-
 /* --- TOPO --- */
 header h1 {
     text-align: center;
@@ -26,7 +25,6 @@ header h1 {
     text-transform: uppercase;
     filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
 }
-
 /* --- TELA DE PONTUAÇÃO (Principal) --- */
 .container {
     padding: 10px;
@@ -34,7 +32,6 @@ header h1 {
     margin: auto;
     padding-bottom: 120px;
 }
-
 .linha-participante {
     display: flex;
     align-items: center;
@@ -47,7 +44,6 @@ header h1 {
     box-shadow: 0 4px 6px rgba(0,0,0,0.2);
     overflow-x: auto; /* Permite rolar os botões no celular se necessário */
 }
-
 .foto { 
     width: 50px; 
     height: 50px; 
@@ -56,7 +52,6 @@ header h1 {
     flex-shrink: 0; 
     object-fit: cover;
 }
-
 .nome { 
     width: 120px; 
     font-weight: bold; 
@@ -64,13 +59,11 @@ header h1 {
     font-size: 0.9rem;
     text-shadow: 1px 1px 2px black;
 }
-
 .botoes-container {
     display: flex;
     gap: 6px;
     flex-grow: 1;
 }
-
 .btn-ponto {
     min-width: 80px; /* Garante que o texto do botão não suma */
     background: #003366;
@@ -83,7 +76,6 @@ header h1 {
     text-transform: uppercase;
     font-weight: bold;
 }
-
 /* --- TELA DE RANKING (Ajustada para Mobile) --- */
 .titulo-ranking {
     text-align: center;
@@ -94,7 +86,6 @@ header h1 {
     margin: 20px 0;
     text-transform: uppercase;
 }
-
 .podio-container {
     display: flex;
     justify-content: flex-start; /* Alinha no início para o scroll funcionar */
@@ -110,7 +101,6 @@ header h1 {
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch; /* Melhora o deslize no iPhone */
 }
-
 /* Estilização da barra de rolagem para ficar discreta */
 .podio-container::-webkit-scrollbar {
     height: 6px;
@@ -119,7 +109,6 @@ header h1 {
     background: #bf953f;
     border-radius: 10px;
 }
-
 .coluna-ranking {
     display: flex;
     flex-direction: column;
@@ -128,7 +117,6 @@ header h1 {
     flex-shrink: 0; /* Não deixa o aluno ser "esmagado" */
     transition: 0.5s;
 }
-
 .estrela-bloco {
     width: 35px;
     height: 10px;
@@ -138,7 +126,6 @@ header h1 {
     box-shadow: 0 0 5px rgba(255, 215, 0, 0.4);
     animation: crescer 0.8s ease-out;
 }
-
 .foto-ranking {
     width: 70px;
     height: 70px;
@@ -147,7 +134,6 @@ header h1 {
     margin-top: 10px;
     object-fit: cover;
 }
-
 .nome-ranking {
     margin-top: 10px;
     font-weight: bold;
@@ -158,14 +144,12 @@ header h1 {
     overflow: hidden;
     text-overflow: ellipsis; /* Abrevia nomes muito longos */
 }
-
 .total-estrelas {
     color: #fcf6ba;
     font-size: 1.1rem;
     font-weight: bold;
     margin-top: 5px;
 }
-
 /* --- RODAPÉ FIXO --- */
 footer { 
     position: fixed; 
@@ -182,12 +166,10 @@ footer {
     border-top: 1px solid #bf953f;
     z-index: 1000;
 }
-
 .logo {
     height: 40px; /* Logos menores para caber o botão central */
     width: auto;
 }
-
 .btn-central { 
     background: var(--dourado-gradiente); 
     border: none; 
@@ -199,33 +181,15 @@ footer {
     color: #1a1a1a;
     text-transform: uppercase;
 }
-
 /* --- ANIMAÇÕES --- */
 @keyframes crescer {
     from { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
     to { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
 }
-
 /* Ajustes para telas muito pequenas (iPhone SE, etc) */
 @media (max-width: 400px) {
     .coluna-ranking { min-width: 85px; }
     .foto-ranking { width: 60px; height: 60px; }
     footer { padding: 0 10px; }
     .btn-central { padding: 8px 15px; font-size: 0.7rem; }
-}
-
-.tabela-pilares {
-    font-size: 0.6rem;
-    color: gold;
-    text-align: left;
-    background: rgba(0, 0, 0, 0.3);
-    padding: 5px;
-    border-radius: 5px;
-    margin-bottom: 5px;
-    width: 90%;
-}
-.pilar-item {
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid rgba(218, 165, 32, 0.2);
 }

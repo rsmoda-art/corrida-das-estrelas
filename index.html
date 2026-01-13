@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -6,32 +7,20 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <div id="tela-principal">
         <header><h1>CORRIDA DAS ESTRELAS</h1></header>
         <div class="container" id="lista-participantes">Carregando jovens...</div>
     </div>
-
     <div id="tela-ranking" style="display:none">
-        <h2 class="titulo-ranking">RANKING GERAL</h2>
-        <div class="podio-container" id="podio"></div>
+        <h2 class="titulo-ranking">RANKING - CORRIDA DAS ESTRELAS</h2>
+        <div class="podio-container" id="podio">
+            </div>
     </div>
-
-    <div id="tela-ranking-semana" style="display:none">
-        <h2 class="titulo-ranking">RANKING DA SEMANA</h2>
-        <div class="podio-container" id="podio-semana"></div>
-    </div>
-
     <footer>
-        <img src="logo-jovens.png" class="logo">
-        <div id="botoes-rodape" style="display: flex; gap: 10px;">
-            <button class="btn-central" id="btn-geral" onclick="irParaGeral()">RANKING GERAL</button>
-            <button class="btn-central" id="btn-semana" onclick="irParaSemana()">RANKING SEMANA</button>
-        </div>
-        <button class="btn-central" id="btn-voltar" style="display: none;" onclick="voltarPontos()">VOLTAR</button>
-        <img src="logo-igreja.png" class="logo">
+        <img src="logo-jovens.png" class="logo" style="height:60px">
+        <button class="btn-central" id="btn-nav" onclick="trocarTela()">VER RANKING</button>
+        <img src="logo-igreja.png" class="logo" style="height:60px">
     </footer>
-
     <audio id="som-moeda" src="https://www.soundjay.com/button/sounds/coin-01.mp3"></audio>
     <script src="script.js"></script>
 </body>
