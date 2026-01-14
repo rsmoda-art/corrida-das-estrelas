@@ -11,16 +11,30 @@
         <header><h1>CORRIDA DAS ESTRELAS</h1></header>
         <div class="container" id="lista-participantes">Carregando jovens...</div>
     </div>
+
     <div id="tela-ranking" style="display:none">
-        <h2 class="titulo-ranking">RANKING - CORRIDA DAS ESTRELAS</h2>
-        <div class="podio-container" id="podio">
+        <h2 class="titulo-ranking">RANKING GERAL</h2>
+        <div class="podio-container" id="podio"></div>
+    </div>
+
+    <div id="tela-ranking-semana" style="display:none">
+        <h2 class="titulo-ranking">RANKING DA SEMANA</h2>
+        <div class="podio-container" id="podio-semana">
             </div>
     </div>
+
     <footer>
         <img src="logo-jovens.png" class="logo" style="height:60px">
-        <button class="btn-central" id="btn-nav" onclick="trocarTela()">VER RANKING</button>
+        
+        <div style="display: flex; gap: 10px;">
+            <button class="btn-central" id="btn-geral" onclick="irParaRankingGeral()">RANKING GERAL</button>
+            <button class="btn-central" id="btn-semana" onclick="irParaRankingSemana()">RANKING SEMANAL</button>
+            <button class="btn-central" id="btn-voltar" style="display:none" onclick="voltarParaInicio()">VOLTAR</button>
+        </div>
+
         <img src="logo-igreja.png" class="logo" style="height:60px">
     </footer>
+
     <audio id="som-moeda" src="moeda.mp3"></audio>
     <script src="script.js"></script>
 </body>
