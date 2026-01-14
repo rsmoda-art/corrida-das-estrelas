@@ -62,7 +62,7 @@ function renderizarPontuacao() {
                     <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Oferta', 2)">Oferta (2)</button>
                     <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Visitantes', 3)">Visitantes (3)</button>
                     <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Aluno Efetivo', 2)">Aluno Efetivo (2)</button>
-                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Pergunta', 3)">Pergunta Surpresa (3)</button>
+                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Pergunta', 3)">Pergunta (3)</button>
                     <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Apoio', 1)">Resposta em Aula (1)</button>
                 </div>
             </div>`;
@@ -147,15 +147,37 @@ function renderizarRankingSemanaSimple() {
     const podioSemana = document.getElementById('podio-semana');
     podioSemana.innerHTML = '';
     
-    const ordenados = [...participantes].sort((a, b) => b.pontos - a.pontos);
+    // Calcula o total da semana somando os pilares de cada um
+    // Isso garante que se o geral for 1000, mas na semana ele fez 10, apareça 10.
+    const ordenados = [...participantes].sort((a, b) => {
+        let totalA = (a.presenca||0) + (a.biblia||0) + (a.revista||0) + (a.oferta||0) + (a.visitantes||0) + (a.efetivo||0) + (a.pergunta||0) + (a.apoio||0);
+        let totalB = (b.presenca||0) + (b.biblia||0) + (b.revista||0) + (b.oferta||0) + (b.visitantes||0) + (b.efetivo||0) + (b.pergunta||0) + (b.apoio||0);
+        return totalB - totalA;
+    });
 
     ordenados.forEach(p => {
+        let totalSemana = (p.presenca||0) + (p.biblia||0) + (p.revista||0) + (p.oferta||0) + (p.visitantes||0) + (p.efetivo||0) + (p.pergunta||0) + (p.apoio||0);
+        
+        // Tabela lateral com os pilares
+        let pilaresHTML = `
+            <div style="font-size: 0.65rem; color: #fcf6ba; text-align: left; background: rgba(0,0,0,0.4); padding: 5px; border-radius: 5px; margin-bottom: 5px; width: 90px;">
+                <div style="display:flex; justify-content:space-between"><span>Pres:</span> <span>${p.presenca||0}</span></div>
+                <div style="display:flex; justify-content:space-between"><span>Bíb:</span> <span>${p.biblia||0}</span></div>
+                <div style="display:flex; justify-content:space-between"><span>Rev:</span> <span>${p.revista||0}</span></div>
+                <div style="display:flex; justify-content:space-between"><span>Of:</span> <span>${p.oferta||0}</span></div>
+                <div style="display:flex; justify-content:space-between"><span>Vis:</span> <span>${p.visitantes||0}</span></div>
+                <div style="display:flex; justify-content:space-between"><span>Efe:</span> <span>${p.efetivo||0}</span></div>
+                <div style="display:flex; justify-content:space-between"><span>Per:</span> <span>${p.pergunta||0}</span></div>
+                <div style="display:flex; justify-content:space-between"><span>Apo:</span> <span>${p.apoio||0}</span></div>
+            </div>`;
+
         podioSemana.innerHTML += `
             <div class="coluna-ranking">
+                ${pilaresHTML}
                 <img src="fotos/${p.nome}.png" class="foto-ranking" onerror="this.src='https://via.placeholder.com/85?text=S/F'">
                 <div class="info-ranking" style="width: 100%; text-align: center;">
                     <div class="nome-ranking" style="display: block; margin-top: 10px;">${p.nome}</div>
-                    <div class="total-estrelas" style="display: block; margin-top: 5px;">${p.pontos} ⭐</div>
+                    <div class="total-estrelas" style="display: block; margin-top: 5px;">${totalSemana} ⭐</div>
                 </div>
             </div>`;
     });
