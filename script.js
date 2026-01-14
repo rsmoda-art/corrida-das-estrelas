@@ -94,77 +94,63 @@ async function atualizarPonto(index, pilar, valor) {
         await fetch(URL_API, { method: 'POST', body: JSON.stringify(participantes[index]) });
     }
 }
-function renderizarRanking(containerId, isSemanal) {
-    const podio = document.getElementById(containerId);
-    podio.innerHTML = '';
+// FUNÇÃO PARA RENDERIZAR O RANKING GERAL
+function renderizarRankingGeral() {
+    const podio = document.getElementById('podio');
+    podio.innerHTML = ''; // Limpa antes de carregar
     
-    let ordenados = isSemanal 
-        ? [...participantes].sort((a, b) => (rankingSemanal[b.nome]?.total || 0) - (rankingSemanal[a.nome]?.total || 0))
-        : [...participantes].sort((a, b) => b.pontos - a.pontos);
+    // Organiza do MAIOR para o MENOR
+    const ordenados = [...participantes].sort((a, b) => b.pontos - a.pontos);
+
     ordenados.forEach(p => {
-        const pontosSemana = rankingSemanal[p.nome] || { total: 0, pilares: {} };
-        const totalExibir = isSemanal ? pontosSemana.total : p.pontos;
-        
+        // Gera a coluna de estrelas acima da foto
         let estrelasHTML = '<div style="display: flex; flex-direction: column-reverse; align-items: center;">';
-        for(let i = 0; i < Math.min(totalExibir, 40); i++) {
+        const limiteVisual = Math.min(p.pontos, 40); 
+        for(let i = 0; i < limiteVisual; i++) {
             estrelasHTML += `<div class="estrela-bloco"></div>`;
         }
         estrelasHTML += '</div>';
-        let pilaresHTML = '';
-        if (isSemanal) {
-            pilaresHTML = `<div class="tabela-pilares">`;
-            const listaPilares = ['Presença', 'Bíblia', 'Revista', 'Oferta', 'Visitantes', 'Aluno Efetivo', 'Pergunta', 'Apoio'];
-            listaPilares.forEach(pil => {
-                pilaresHTML += `<div class="pilar-item"><span>${pil}:</span> <span>${pontosSemana.pilares[pil] || 0}</span></div>`;
-            });
-            pilaresHTML += `</div>`;
-        }
+
+        // Monta a estrutura: Estrelas -> Foto -> Nome -> Pontos
         podio.innerHTML += `
             <div class="coluna-ranking">
-                ${isSemanal ? pilaresHTML : ''}
                 ${estrelasHTML}
                 <img src="fotos/${p.nome}.png" class="foto-ranking" onerror="this.src='https://via.placeholder.com/85?text=S/F'">
-                <div class="info-ranking" style="width: 100%; text-align: center; word-wrap: break-word;">
+                <div class="info-ranking" style="width: 100%; text-align: center;">
                     <div class="nome-ranking" style="display: block; margin-top: 10px;">${p.nome}</div>
-                    <div class="total-estrelas" style="display: block; margin-top: 5px;">${totalExibir} ⭐</div>
+                    <div class="total-estrelas" style="display: block; margin-top: 5px;">${p.pontos} ⭐</div>
                 </div>
             </div>`;
     });
 }
-// NAVEGAÇÃO CORRIGIDA
+
+// NAVEGAÇÃO: IR PARA O RANKING GERAL
 function irParaGeral() {
+    // 1. Esconde a tela de pontos e a da semana
     document.getElementById('tela-principal').style.display = 'none';
     document.getElementById('tela-ranking-semana').style.display = 'none';
+    
+    // 2. Mostra a tela de ranking geral
     document.getElementById('tela-ranking').style.display = 'block';
     
-    // Mostra apenas o botão Voltar
+    // 3. Gerencia os botões do rodapé
     document.getElementById('btn-geral').style.display = 'none';
     document.getElementById('btn-semana').style.display = 'none';
-    document.getElementById('btn-nav').style.display = 'inline-block';
+    document.getElementById('btn-nav').style.display = 'inline-block'; // Botão VOLTAR
     
-    renderizarRanking('podio', false);
+    // 4. Desenha o ranking
+    renderizarRankingGeral();
 }
-function irParaSemana() {
-    document.getElementById('tela-principal').style.display = 'none';
-    document.getElementById('tela-ranking').style.display = 'none';
-    document.getElementById('tela-ranking-semana').style.display = 'block';
-    
-    // Mostra apenas o botão Voltar
-    document.getElementById('btn-geral').style.display = 'none';
-    document.getElementById('btn-semana').style.display = 'none';
-    document.getElementById('btn-nav').style.display = 'inline-block';
-    
-    renderizarRanking('podio-semana', true);
-}
+
+// NAVEGAÇÃO: VOLTAR PARA A TELA INICIAL
 function voltarPontos() {
-    document.getElementById('tela-principal').style.display = 'block';
     document.getElementById('tela-ranking').style.display = 'none';
     document.getElementById('tela-ranking-semana').style.display = 'none';
+    document.getElementById('tela-principal').style.display = 'block';
     
-    // Restaura botões originais
     document.getElementById('btn-geral').style.display = 'inline-block';
     document.getElementById('btn-semana').style.display = 'inline-block';
-    document.getElementById('btn-nav').style.display = 'none';
+    document.getElementById('btn-nav').style.display = 'none'; // Esconde botão VOLTAR
     
     renderizarPontuacao();
 }
