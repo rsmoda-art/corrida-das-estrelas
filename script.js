@@ -1,62 +1,84 @@
-
+// ATENÇÃO: Substitua o link abaixo pela sua URL do Google Apps Script que termina em /exec
 const URL_API = "https://script.google.com/macros/s/AKfycbzAmYptdFkB4lFZ08dCBVkMZDAXYQS7E4h8JPzHgRaygF20y3daOHl-633DQClmYShVjA/exec"; 
+
 let participantes = [];
-// Gerenciamento do Ranking Semanal (LocalStorage)
-let rankingSemanal = JSON.parse(localStorage.getItem('rankingSemana')) || {};
-// Função para verificar se é hora de zerar (Sábado 23:59)
-function verificarResetSemanal() {
-    const agora = new Date();
-    const diaSemana = agora.getDay(); // 6 é Sábado
-    const hora = agora.getHours();
-    const minuto = agora.getMinutes();
-    const ultimoReset = localStorage.getItem('ultimoResetSemana');
-    const dataAtualString = agora.toDateString();
-    if (diaSemana === 6 && hora === 23 && minuto === 59 && ultimoReset !== dataAtualString) {
-        rankingSemanal = {};
-        localStorage.setItem('rankingSemana', JSON.stringify(rankingSemanal));
-        localStorage.setItem('ultimoResetSemana', dataAtualString);
-    }
-}
+
+// Função de Carga Inicial
 async function carregarDados() {
-    verificarResetSemanal();
     try {
         const response = await fetch(URL_API);
         if (!response.ok) throw new Error('Falha na rede');
         participantes = await response.json();
         
-        // Garante que o texto de carregamento suma e a tela apareça
-        const container = document.getElementById('lista-participantes');
+        // Remove mensagem de carregamento e mostra a lista
+        const lista = document.getElementById('lista-participantes');
         if (participantes.length === 0) {
-            container.innerText = "Nenhum jovem encontrado na planilha.";
+            lista.innerText = "Nenhum jovem encontrado na planilha.";
         } else {
             renderizarPontuacao();
         }
     } catch (error) {
-        console.error("Erro:", error);
-        document.getElementById('lista-participantes').innerText = "Erro ao conectar com o Google Sheets.";
+        console.error("Erro ao carregar:", error);
+        document.getElementById('lista-participantes').innerText = "Erro de conexão. Verifique o link do Google.";
     }
 }
-// ATUALIZAÇÃO EM TEMPO REAL (Busca silenciosa)
-async function buscarAtualizacoes() {
-    try {
-        const response = await fetch(URL_API);
-        if (response.ok) {
-            const novosDados = await response.json();
-            if (JSON.stringify(novosDados) !== JSON.stringify(participantes)) {
-                participantes = novosDados;
-                // Atualiza apenas a tela que estiver aberta
-                if (document.getElementById('tela-ranking').style.display === 'block') {
-                    renderizarRanking('podio', false);
-                } else if (document.getElementById('tela-ranking-semana').style.display === 'block') {
-                    renderizarRanking('podio-semana', true);
-                } else {
-                    renderizarPontuacao();
-                }
-            }
+
+// ETAPA 1: Renderizar Ranking Geral
+function renderizarRankingGeral() {
+    const podio = document.getElementById('podio');
+    podio.innerHTML = ''; 
+    
+    // Organiza do MAIOR para o MENOR
+    const ordenados = [...participantes].sort((a, b) => b.pontos - a.pontos);
+
+    ordenados.forEach(p => {
+        let estrelasHTML = '<div style="display: flex; flex-direction: column-reverse; align-items: center;">';
+        const limiteVisual = Math.min(p.pontos, 40); 
+        for(let i = 0; i < limiteVisual; i++) {
+            estrelasHTML += `<div class="estrela-bloco"></div>`;
         }
-    } catch (e) { console.warn("Erro sincronia"); }
+        estrelasHTML += '</div>';
+
+        podio.innerHTML += `
+            <div class="coluna-ranking">
+                ${estrelasHTML}
+                <img src="fotos/${p.nome}.png" class="foto-ranking" onerror="this.src='https://via.placeholder.com/85?text=S/F'">
+                <div class="info-ranking" style="width: 100%; text-align: center;">
+                    <div class="nome-ranking" style="display: block; margin-top: 10px; font-weight: bold;">${p.nome}</div>
+                    <div class="total-estrelas" style="display: block; margin-top: 5px; color: gold;">${p.pontos} ⭐</div>
+                </div>
+            </div>`;
+    });
 }
-setInterval(buscarAtualizacoes, 10000);
+
+// Navegação para Ranking Geral
+function irParaGeral() {
+    document.getElementById('tela-principal').style.display = 'none';
+    document.getElementById('tela-ranking-semana').style.display = 'none';
+    document.getElementById('tela-ranking').style.display = 'block';
+    
+    // Ajuste de Botões
+    document.getElementById('btn-geral').style.display = 'none';
+    document.getElementById('btn-semana').style.display = 'none';
+    document.getElementById('btn-nav').style.display = 'inline-block';
+    
+    renderizarRankingGeral();
+}
+
+// Voltar para Início
+function voltarPontos() {
+    document.getElementById('tela-ranking').style.display = 'none';
+    document.getElementById('tela-ranking-semana').style.display = 'none';
+    document.getElementById('tela-principal').style.display = 'block';
+    
+    document.getElementById('btn-geral').style.display = 'inline-block';
+    document.getElementById('btn-semana').style.display = 'inline-block';
+    document.getElementById('btn-nav').style.display = 'none';
+    
+    renderizarPontuacao();
+}
+
+// Mantém sua função renderizarPontuacao e atualizarPonto aqui...
 function renderizarPontuacao() {
     const lista = document.getElementById('lista-participantes');
     lista.innerHTML = '';
@@ -66,94 +88,22 @@ function renderizarPontuacao() {
                 <img src="fotos/${p.nome}.png" class="foto" onerror="this.src='https://via.placeholder.com/60?text=S/F'">
                 <div class="nome">${p.nome}</div>
                 <div class="botoes-container">
-                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Presença', 1)">Presença (1)</button>
-                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Bíblia', 2)">Bíblia (2)</button>
-                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Revista', 2)">Revista (2)</button>
-                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Oferta', 2)">Oferta (2)</button>
-                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Visitantes', 3)">Visitantes (3)</button>
-                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Aluno Efetivo', 2)">Aluno Efetivo (2)</button>
-                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Pergunta', 3)">Pergunta (3)</button>
-                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Apoio', 1)">Apoio (1)</button>
+                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Presença', 1)">P (1)</button>
+                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Bíblia', 2)">B (2)</button>
+                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Revista', 2)">R (2)</button>
+                    <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Oferta', 2)">O (2)</button>
                 </div>
             </div>`;
     });
 }
+
 async function atualizarPonto(index, pilar, valor) {
-    if(confirm(`Confirmar +${valor} estrela(s) para ${participantes[index].nome} em ${pilar}?`)) {
-        const nome = participantes[index].nome;
+    if(confirm(`+${valor} estrelas para ${participantes[index].nome}?`)) {
         participantes[index].pontos += valor; 
-        
-        if (!rankingSemanal[nome]) rankingSemanal[nome] = { total: 0, pilares: {} };
-        rankingSemanal[nome].total += valor;
-        rankingSemanal[nome].pilares[pilar] = (rankingSemanal[nome].pilares[pilar] || 0) + valor;
-        
-        localStorage.setItem('rankingSemana', JSON.stringify(rankingSemanal));
         document.getElementById('som-moeda').play();
-        
         renderizarPontuacao();
         await fetch(URL_API, { method: 'POST', body: JSON.stringify(participantes[index]) });
     }
 }
-// FUNÇÃO PARA RENDERIZAR O RANKING GERAL
-function renderizarRankingGeral() {
-    const podio = document.getElementById('podio');
-    podio.innerHTML = ''; // Limpa antes de carregar
-    
-    // Organiza do MAIOR para o MENOR
-    const ordenados = [...participantes].sort((a, b) => b.pontos - a.pontos);
 
-    ordenados.forEach(p => {
-        // Gera a coluna de estrelas acima da foto
-        let estrelasHTML = '<div style="display: flex; flex-direction: column-reverse; align-items: center;">';
-        const limiteVisual = Math.min(p.pontos, 40); 
-        for(let i = 0; i < limiteVisual; i++) {
-            estrelasHTML += `<div class="estrela-bloco"></div>`;
-        }
-        estrelasHTML += '</div>';
-
-        // Monta a estrutura: Estrelas -> Foto -> Nome -> Pontos
-        podio.innerHTML += `
-            <div class="coluna-ranking">
-                ${estrelasHTML}
-                <img src="fotos/${p.nome}.png" class="foto-ranking" onerror="this.src='https://via.placeholder.com/85?text=S/F'">
-                <div class="info-ranking" style="width: 100%; text-align: center;">
-                    <div class="nome-ranking" style="display: block; margin-top: 10px;">${p.nome}</div>
-                    <div class="total-estrelas" style="display: block; margin-top: 5px;">${p.pontos} ⭐</div>
-                </div>
-            </div>`;
-    });
-}
-
-// NAVEGAÇÃO: IR PARA O RANKING GERAL
-function irParaGeral() {
-    // 1. Esconde a tela de pontos e a da semana
-    document.getElementById('tela-principal').style.display = 'none';
-    document.getElementById('tela-ranking-semana').style.display = 'none';
-    
-    // 2. Mostra a tela de ranking geral
-    document.getElementById('tela-ranking').style.display = 'block';
-    
-    // 3. Gerencia os botões do rodapé
-    document.getElementById('btn-geral').style.display = 'none';
-    document.getElementById('btn-semana').style.display = 'none';
-    document.getElementById('btn-nav').style.display = 'inline-block'; // Botão VOLTAR
-    
-    // 4. Desenha o ranking
-    renderizarRankingGeral();
-}
-
-// NAVEGAÇÃO: VOLTAR PARA A TELA INICIAL
-function voltarPontos() {
-    document.getElementById('tela-ranking').style.display = 'none';
-    document.getElementById('tela-ranking-semana').style.display = 'none';
-    document.getElementById('tela-principal').style.display = 'block';
-    
-    document.getElementById('btn-geral').style.display = 'inline-block';
-    document.getElementById('btn-semana').style.display = 'inline-block';
-    document.getElementById('btn-nav').style.display = 'none'; // Esconde botão VOLTAR
-    
-    renderizarPontuacao();
-}
-// Certifique-se de que os IDs dos botões no seu HTML batam com estes:
-// btn-geral, btn-semana e btn-nav (o de voltar)
 carregarDados();
