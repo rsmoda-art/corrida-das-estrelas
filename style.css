@@ -174,12 +174,13 @@ footer {
     width: auto;
 }
 
-/* Container para centralizar os botões */
 .footer-buttons {
     display: flex;
     gap: 10px;
     justify-content: center;
     align-items: center;
+    flex-grow: 1; /* Isso força os botões a ocuparem o espaço central */
+    z-index: 1001; /* Garante que fiquem acima de qualquer fundo */
 }
 
 .btn-central { 
