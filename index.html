@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -17,22 +16,43 @@
         <div class="podio-container" id="podio"></div>
     </div>
 
-    <div id="tela-ranking-semana" style="display:none">
-        <h2 class="titulo-ranking">RANKING DA SEMANA</h2>
-        <div class="podio-container" id="podio-semana">
+    <!-- ✅ NOVO: MODAL DE PONTUAÇÃO (abre ao clicar na foto do ranking) -->
+    <div id="modal-pontos" class="modal" style="display:none">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modal-nome">Pontuar</div>
+                <button class="modal-close" onclick="fecharModalPontos()">✕</button>
             </div>
+
+            <div class="modal-subtitle">Selecione um pilar:</div>
+
+            <div class="modal-grid">
+                <button class="btn-modal" onclick="pontuarNoModal('Presença', 1)">PRESENÇA (+1)</button>
+                <button class="btn-modal" onclick="pontuarNoModal('Bíblia', 2)">BÍBLIA (+2)</button>
+                <button class="btn-modal" onclick="pontuarNoModal('Revista', 2)">REVISTA (+2)</button>
+                <button class="btn-modal" onclick="pontuarNoModal('Oferta', 2)">OFERTA (+2)</button>
+                <button class="btn-modal" onclick="pontuarNoModal('Visitantes', 3)">VISITANTES (+3)</button>
+                <button class="btn-modal" onclick="pontuarNoModal('Aluno Efetivo', 2)">EFETIVO (+2)</button>
+                <button class="btn-modal" onclick="pontuarNoModal('Pergunta', 3)">PERGUNTA (+3)</button>
+                <button class="btn-modal" onclick="pontuarNoModal('Apoio', 1)">APOIO (+1)</button>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-modal-secondary" onclick="fecharModalPontos()">Fechar</button>
+            </div>
+        </div>
     </div>
 
     <footer>
-    <img src="logo-jovens.png" class="logo">
-    
-    <div class="footer-buttons">
-        <button class="btn-central" id="btn-geral" onclick="irParaRankingGeral()">RANKING GERAL</button>
-        <button class="btn-central" id="btn-semana" onclick="irParaRankingSemana()">RANKING SEMANAL</button>
-        <button class="btn-central" id="btn-voltar" style="display:none" onclick="voltarParaInicio()">VOLTAR</button>
-    </div>
+        <img src="logo-jovens.png" class="logo">
 
-    <img src="logo-igreja.png" class="logo">
+        <div class="footer-buttons">
+            <button class="btn-central" id="btn-geral" onclick="irParaRankingGeral()">RANKING GERAL</button>
+            <!-- ✅ removido: botão RANKING SEMANAL -->
+            <button class="btn-central" id="btn-voltar" style="display:none" onclick="voltarParaInicio()">VOLTAR</button>
+        </div>
+
+        <img src="logo-igreja.png" class="logo">
     </footer>
 
     <audio id="som-moeda" src="moeda.mp3"></audio>

@@ -205,3 +205,114 @@ footer {
     .logo { height: 35px; }
     .btn-central { padding: 8px 12px; font-size: 0.65rem; }
 }
+/* ✅ foto do ranking clicável */
+.foto-ranking-click {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.foto-ranking-click:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(252, 246, 186, 0.35);
+}
+
+/* ✅ MODAL */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+.modal-content {
+  width: min(520px, 100%);
+  background: rgba(0, 12, 26, 0.96);
+  border: 1px solid rgba(191, 149, 63, 0.6);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.modal-title {
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--dourado-gradiente);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.modal-close {
+  border: 1px solid rgba(191, 149, 63, 0.7);
+  background: transparent;
+  color: #fcf6ba;
+  border-radius: 10px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.modal-subtitle {
+  color: #fcf6ba;
+  opacity: 0.9;
+  font-size: 0.85rem;
+  margin: 8px 0 12px;
+}
+
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.btn-modal {
+  background: #003366;
+  border: 1px solid #bf953f;
+  color: white;
+  padding: 12px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 900;
+}
+
+.btn-modal:active {
+  transform: scale(0.99);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.btn-modal-secondary {
+  background: transparent;
+  border: 1px solid rgba(191, 149, 63, 0.7);
+  color: #fcf6ba;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+@media (max-width: 480px) {
+  .modal-grid {
+    grid-template-columns: 1fr;
+  }
+}
