@@ -1,61 +1,66 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Corrida das Estrelas</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
+    <!-- TELA PRINCIPAL (PONTUAÇÃO) -->
     <div id="tela-principal">
         <header><h1>CORRIDA DAS ESTRELAS</h1></header>
         <div class="container" id="lista-participantes">Carregando jovens...</div>
     </div>
 
+    <!-- TELA RANKING GERAL -->
     <div id="tela-ranking" style="display:none">
         <h2 class="titulo-ranking">RANKING GERAL</h2>
         <div class="podio-container" id="podio"></div>
     </div>
 
-    <!-- ✅ NOVO: MODAL DE PONTUAÇÃO (abre ao clicar na foto do ranking) -->
+    <!-- MODAL DE PONTOS (abre ao clicar na foto no ranking) -->
     <div id="modal-pontos" class="modal" style="display:none">
-        <div class="modal-content">
+        <div class="modal-content" role="dialog" aria-modal="true">
             <div class="modal-header">
                 <div class="modal-title" id="modal-nome">Pontuar</div>
-                <button class="modal-close" onclick="fecharModalPontos()">✕</button>
+                <button class="modal-close" type="button" onclick="fecharModalPontos()">✕</button>
             </div>
 
             <div class="modal-subtitle">Selecione um pilar:</div>
 
             <div class="modal-grid">
-                <button class="btn-modal" onclick="pontuarNoModal('Presença', 1)">PRESENÇA (+1)</button>
-                <button class="btn-modal" onclick="pontuarNoModal('Bíblia', 2)">BÍBLIA (+2)</button>
-                <button class="btn-modal" onclick="pontuarNoModal('Revista', 2)">REVISTA (+2)</button>
-                <button class="btn-modal" onclick="pontuarNoModal('Oferta', 2)">OFERTA (+2)</button>
-                <button class="btn-modal" onclick="pontuarNoModal('Visitantes', 3)">VISITANTES (+3)</button>
-                <button class="btn-modal" onclick="pontuarNoModal('Aluno Efetivo', 2)">EFETIVO (+2)</button>
-                <button class="btn-modal" onclick="pontuarNoModal('Pergunta', 3)">PERGUNTA (+3)</button>
-                <button class="btn-modal" onclick="pontuarNoModal('Apoio', 1)">APOIO (+1)</button>
+                <button class="btn-modal" type="button" onclick="pontuarNoModal('Presença', 1)">PRESENÇA (+1)</button>
+                <button class="btn-modal" type="button" onclick="pontuarNoModal('Bíblia', 2)">BÍBLIA (+2)</button>
+                <button class="btn-modal" type="button" onclick="pontuarNoModal('Revista', 2)">REVISTA (+2)</button>
+                <button class="btn-modal" type="button" onclick="pontuarNoModal('Oferta', 2)">OFERTA (+2)</button>
+                <button class="btn-modal" type="button" onclick="pontuarNoModal('Visitantes', 3)">VISITANTES (+3)</button>
+                <button class="btn-modal" type="button" onclick="pontuarNoModal('Aluno Efetivo', 2)">EFETIVO (+2)</button>
+                <button class="btn-modal" type="button" onclick="pontuarNoModal('Pergunta', 3)">PERGUNTA (+3)</button>
+                <button class="btn-modal" type="button" onclick="pontuarNoModal('Apoio', 1)">APOIO (+1)</button>
             </div>
 
             <div class="modal-footer">
-                <button class="btn-modal-secondary" onclick="fecharModalPontos()">Fechar</button>
+                <button class="btn-modal-danger" type="button" onclick="desfazerUmNoModal()">DESFAZER (-1)</button>
+                <button class="btn-modal-secondary" type="button" onclick="fecharModalPontos()">Fechar</button>
             </div>
         </div>
     </div>
 
+    <!-- RODAPÉ -->
     <footer>
-        <img src="logo-jovens.png" class="logo">
+        <img src="logo-jovens.png" class="logo" alt="Logo Jovens" />
 
         <div class="footer-buttons">
-            <button class="btn-central" id="btn-geral" onclick="irParaRankingGeral()">RANKING GERAL</button>
-            <!-- ✅ removido: botão RANKING SEMANAL -->
-            <button class="btn-central" id="btn-voltar" style="display:none" onclick="voltarParaInicio()">VOLTAR</button>
+            <button class="btn-central" id="btn-geral" type="button" onclick="irParaRankingGeral()">RANKING GERAL</button>
+            <button class="btn-central" id="btn-voltar" type="button" style="display:none" onclick="voltarParaInicio()">VOLTAR</button>
         </div>
 
-        <img src="logo-igreja.png" class="logo">
+        <img src="logo-igreja.png" class="logo" alt="Logo Igreja" />
     </footer>
 
-    <audio id="som-moeda" src="moeda.mp3"></audio>
+    <audio id="som-moeda" src="moeda.mp3" preload="auto"></audio>
     <script src="script.js"></script>
 </body>
 </html>

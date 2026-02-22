@@ -1,211 +1,150 @@
 :root {
-    --azul-marinho: #001f3f;
-    --azul-profundo: #000c1a;
-    --dourado-gradiente: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
-    --branco-gelo: #f4f4f4;
+  --azul-marinho: #001f3f;
+  --azul-profundo: #000c1a;
+  --dourado-gradiente: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+  --branco-gelo: #f4f4f4;
 }
 
 body {
-    background: radial-gradient(circle, var(--azul-marinho) 0%, var(--azul-profundo) 100%);
-    background-attachment: fixed;
-    color: var(--branco-gelo);
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
+  background: radial-gradient(circle, var(--azul-marinho) 0%, var(--azul-profundo) 100%);
+  background-attachment: fixed;
+  color: var(--branco-gelo);
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 /* --- TOPO --- */
 header h1 {
-    text-align: center;
-    background: var(--dourado-gradiente);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-size: clamp(1.5rem, 8vw, 3rem);
-    margin: 20px 0;
-    text-transform: uppercase;
-    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
+  text-align: center;
+  background: var(--dourado-gradiente);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: clamp(1.5rem, 8vw, 3rem);
+  margin: 20px 0;
+  text-transform: uppercase;
+  filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
 }
 
-/* --- TELA DE PONTUAÇÃO --- */
+/* --- TELA PONTUAÇÃO --- */
 .container {
-    padding: 10px;
-    max-width: 98%;
-    margin: auto;
-    padding-bottom: 120px;
+  padding: 10px;
+  max-width: 98%;
+  margin: auto;
+  padding-bottom: 120px;
 }
 
 .linha-participante {
-    display: flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.07);
-    margin-bottom: 10px;
-    padding: 12px;
-    border-radius: 12px;
-    border-left: 5px solid #bf953f;
-    gap: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-    overflow-x: auto;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.07);
+  margin-bottom: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  border-left: 5px solid #bf953f;
+  gap: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  overflow-x: auto;
 }
 
-.foto { 
-    width: 50px; 
-    height: 50px; 
-    border-radius: 50%; 
-    border: 2px solid #daa520; 
-    flex-shrink: 0; 
-    object-fit: cover;
+.foto {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #daa520;
+  flex-shrink: 0;
+  object-fit: cover;
 }
 
-.nome { 
-    width: 120px; 
-    font-weight: bold; 
-    flex-shrink: 0; 
-    font-size: 0.9rem;
-    text-shadow: 1px 1px 2px black;
+.nome {
+  width: 120px;
+  font-weight: bold;
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  text-shadow: 1px 1px 2px black;
 }
 
 .botoes-container {
-    display: flex;
-    gap: 6px;
-    flex-grow: 1;
+  display: flex;
+  gap: 6px;
+  flex-grow: 1;
 }
 
 .btn-ponto {
-    min-width: 80px;
-    background: #003366;
-    border: 1px solid #bf953f;
-    color: white;
-    padding: 8px 4px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.6rem;
-    text-transform: uppercase;
-    font-weight: bold;
+  min-width: 80px;
+  background: #003366;
+  border: 1px solid #bf953f;
+  color: white;
+  padding: 8px 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  font-weight: bold;
 }
 
-/* --- TELA DE RANKING --- */
+.btn-ponto:active { transform: scale(0.99); }
+
+/* --- TELA RANKING --- */
 .titulo-ranking {
-    text-align: center;
-    background: var(--dourado-gradiente);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-size: clamp(1.2rem, 6vw, 2.5rem);
-    margin: 20px 0;
-    text-transform: uppercase;
+  text-align: center;
+  background: var(--dourado-gradiente);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: clamp(1.2rem, 6vw, 2.5rem);
+  margin: 20px 0;
+  text-transform: uppercase;
 }
 
 .podio-container {
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-end; 
-    gap: 20px;
-    height: 60vh; 
-    padding: 20px 40px;
-    margin-bottom: 100px;
-    overflow-x: auto; 
-    overflow-y: hidden;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+  gap: 20px;
+  height: 60vh;
+  padding: 20px 40px;
+  margin-bottom: 100px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
 .coluna-ranking {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 100px;
-    flex-shrink: 0;
-    transition: 0.5s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 110px;
+  flex-shrink: 0;
+  transition: 0.3s;
+}
+
+.coluna-estrelas {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
 }
 
 .estrela-bloco {
-    width: 35px;
-    height: 10px;
-    background: var(--dourado-gradiente);
-    margin-bottom: 3px;
-    border-radius: 2px;
-    box-shadow: 0 0 5px rgba(255, 215, 0, 0.4);
-    animation: crescer 0.8s ease-out;
+  width: 35px;
+  height: 10px;
+  background: var(--dourado-gradiente);
+  margin-bottom: 3px;
+  border-radius: 2px;
+  box-shadow: 0 0 5px rgba(255, 215, 0, 0.4);
+  animation: crescer 0.6s ease-out;
 }
 
 .foto-ranking {
-    width: 70px;
-    height: 70px;
-    border: 3px solid gold;
-    border-radius: 50%;
-    margin-top: 10px;
-    object-fit: cover;
+  width: 70px;
+  height: 70px;
+  border: 3px solid gold;
+  border-radius: 50%;
+  margin-top: 10px;
+  object-fit: cover;
 }
 
-.nome-ranking {
-    margin-top: 10px;
-    font-weight: bold;
-    font-size: 0.9rem;
-    text-align: center;
-    width: 100%;
-}
-
-.total-estrelas {
-    color: #fcf6ba;
-    font-size: 1.1rem;
-    font-weight: bold;
-    margin-top: 5px;
-}
-
-/* --- RODAPÉ FIXO (Ajustado para 2 botões) --- */
-footer { 
-    position: fixed; 
-    bottom: 0; 
-    width: 100%; 
-    height: 90px; 
-    background: rgba(0, 12, 26, 0.95);
-    backdrop-filter: blur(5px);
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    padding: 0 20px; 
-    box-sizing: border-box; 
-    border-top: 1px solid #bf953f;
-    z-index: 1000;
-}
-
-.logo {
-    height: 50px;
-    width: auto;
-}
-
-.footer-buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-    flex-grow: 1; /* Isso força os botões a ocuparem o espaço central */
-    z-index: 1001; /* Garante que fiquem acima de qualquer fundo */
-}
-
-.btn-central { 
-    background: var(--dourado-gradiente); 
-    border: none; 
-    padding: 12px 18px; 
-    font-weight: bold; 
-    border-radius: 30px; 
-    cursor: pointer; 
-    font-size: 0.75rem;
-    color: #1a1a1a;
-    text-transform: uppercase;
-    box-shadow: 0 0 10px rgba(191, 149, 63, 0.3);
-}
-
-@keyframes crescer {
-    from { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
-    to { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
-}
-
-@media (max-width: 600px) {
-    .logo { height: 35px; }
-    .btn-central { padding: 8px 12px; font-size: 0.65rem; }
-}
-/* ✅ foto do ranking clicável */
 .foto-ranking-click {
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -215,7 +154,80 @@ footer {
   box-shadow: 0 0 12px rgba(252, 246, 186, 0.35);
 }
 
-/* ✅ MODAL */
+.info-ranking {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.nome-ranking {
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-align: center;
+  width: 100%;
+}
+
+.total-estrelas {
+  color: #fcf6ba;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+/* --- RODAPÉ FIXO --- */
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 90px;
+  background: rgba(0, 12, 26, 0.95);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  box-sizing: border-box;
+  border-top: 1px solid #bf953f;
+  z-index: 1000;
+}
+
+.logo { height: 50px; width: auto; }
+
+.footer-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  z-index: 1001;
+}
+
+.btn-central {
+  background: var(--dourado-gradiente);
+  border: none;
+  padding: 12px 18px;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: #1a1a1a;
+  text-transform: uppercase;
+  box-shadow: 0 0 10px rgba(191, 149, 63, 0.3);
+}
+.btn-central:active { transform: scale(0.99); }
+
+@keyframes crescer {
+  from { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+  to { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
+}
+
+@media (max-width: 600px) {
+  .logo { height: 35px; }
+  .btn-central { padding: 8px 12px; font-size: 0.65rem; }
+}
+
+/* --- MODAL --- */
 .modal {
   position: fixed;
   inset: 0;
@@ -289,14 +301,12 @@ footer {
   text-transform: uppercase;
   font-weight: 900;
 }
-
-.btn-modal:active {
-  transform: scale(0.99);
-}
+.btn-modal:active { transform: scale(0.99); }
 
 .modal-footer {
   display: flex;
   justify-content: flex-end;
+  gap: 10px;
   margin-top: 12px;
 }
 
@@ -311,8 +321,18 @@ footer {
   text-transform: uppercase;
 }
 
+/* ✅ NOVO: botão desfazer */
+.btn-modal-danger {
+  background: transparent;
+  border: 1px solid rgba(255, 120, 120, 0.85);
+  color: #ffd6d6;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
 @media (max-width: 480px) {
-  .modal-grid {
-    grid-template-columns: 1fr;
-  }
+  .modal-grid { grid-template-columns: 1fr; }
 }

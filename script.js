@@ -1,54 +1,100 @@
-const URL_API = "https://script.google.com/macros/s/AKfycbzAmYptdFkB4lFZ08dCBVkMZDAXYQS7E4h8JPzHgRaygF20y3daOHl-633DQClmYShVjA/exec"; 
+const URL_API = "https://script.google.com/macros/s/AKfycbzAmYptdFkB4lFZ08dCBVkMZDAXYQS7E4h8JPzHgRaygF20y3daOHl-633DQClmYShVjA/exec";
 let participantes = [];
 
-// ✅ controle do modal
+// Modal
 let participanteSelecionadoIndex = null;
 
+/* -----------------------------
+   FOTO: robusto contra 404
+   Tenta:
+   1) ./fotos/NOME.png
+   2) ./NOME.png
+   3) placeholder
+------------------------------*/
+function fotoUrlPreferida(nome) {
+  return encodeURI(`./fotos/${nome}.png`);
+}
+function fotoUrlAlternativa(nome) {
+  return encodeURI(`./${nome}.png`);
+}
+function handleImageError(imgEl, nome) {
+  const atual = imgEl.getAttribute("data-try") || "1";
+
+  if (atual === "1") {
+    imgEl.setAttribute("data-try", "2");
+    imgEl.src = fotoUrlAlternativa(nome);
+    return;
+  }
+
+  imgEl.src = "https://via.placeholder.com/85?text=S/F";
+}
+
+/* -----------------------------
+   CARREGAR / ATUALIZAR DADOS
+------------------------------*/
 async function carregarDados() {
   try {
-    const response = await fetch(URL_API);
-    if (!response.ok) throw new Error('Falha na rede');
+    const response = await fetch(URL_API, { method: "GET" });
+    if (!response.ok) throw new Error("Falha na rede");
+
     participantes = await response.json();
 
-    if (participantes.length === 0) {
-      document.getElementById('lista-participantes').innerText = "Nenhum jovem encontrado na planilha.";
-    } else {
-      renderizarPontuacao();
+    const lista = document.getElementById("lista-participantes");
+    if (!participantes || participantes.length === 0) {
+      lista.innerText = "Nenhum jovem encontrado na planilha.";
+      return;
     }
+
+    renderizarPontuacao();
   } catch (error) {
     console.error("Erro ao carregar:", error);
-    document.getElementById('lista-participantes').innerText = "Erro ao conectar com o Google Sheets.";
+    const lista = document.getElementById("lista-participantes");
+    if (lista) lista.innerText = "Erro ao conectar com o Google Sheets.";
   }
 }
 
-// ATUALIZAÇÃO EM TEMPO REAL
 async function buscarAtualizacoes() {
   try {
-    const response = await fetch(URL_API);
-    if (response.ok) {
-      const novosDados = await response.json();
-      if (JSON.stringify(novosDados) !== JSON.stringify(participantes)) {
-        participantes = novosDados;
+    const response = await fetch(URL_API, { method: "GET" });
+    if (!response.ok) return;
 
-        if (document.getElementById('tela-ranking').style.display === 'block') {
-          renderizarRanking();
-        } else {
-          renderizarPontuacao();
-        }
-      }
+    const novosDados = await response.json();
+    if (JSON.stringify(novosDados) !== JSON.stringify(participantes)) {
+      participantes = novosDados;
+
+      const telaRanking = document.getElementById("tela-ranking");
+      const estaNoRanking = telaRanking && telaRanking.style.display === "block";
+
+      if (estaNoRanking) renderizarRanking();
+      else renderizarPontuacao();
     }
-  } catch (e) { console.warn("Erro sincronia"); }
+  } catch (e) {
+    // silencioso
+  }
 }
 setInterval(buscarAtualizacoes, 10000);
 
+/* -----------------------------
+   RENDER: PONTUAÇÃO (TELA INICIAL)
+------------------------------*/
 function renderizarPontuacao() {
-  const lista = document.getElementById('lista-participantes');
-  lista.innerHTML = '';
+  const lista = document.getElementById("lista-participantes");
+  if (!lista) return;
+
+  lista.innerHTML = "";
+
   participantes.forEach((p, index) => {
     lista.innerHTML += `
       <div class="linha-participante">
-        <img src="fotos/${p.nome}.png" class="foto" onerror="this.src='https://via.placeholder.com/60?text=S/F'">
-        <div class="nome">${p.nome}</div>
+        <img 
+          src="${fotoUrlPreferida(p.nome)}"
+          class="foto"
+          data-try="1"
+          onerror="handleImageError(this, '${escapeAspas(p.nome)}')"
+          alt="Foto ${escapeHtml(p.nome)}"
+        >
+        <div class="nome">${escapeHtml(p.nome)}</div>
+
         <div class="botoes-container">
           <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Presença', 1)">Presença (1)</button>
           <button class="btn-ponto" onclick="atualizarPonto(${index}, 'Bíblia', 2)">Bíblia (2)</button>
@@ -63,99 +109,143 @@ function renderizarPontuacao() {
   });
 }
 
-// ✅ Helper: depois de pontuar, atualiza a tela correta
 function atualizarTelaAtual() {
-  if (document.getElementById('tela-ranking').style.display === 'block') {
-    renderizarRanking();
-  } else {
-    renderizarPontuacao();
-  }
+  const telaRanking = document.getElementById("tela-ranking");
+  const estaNoRanking = telaRanking && telaRanking.style.display === "block";
+  if (estaNoRanking) renderizarRanking();
+  else renderizarPontuacao();
 }
 
-// FUNÇÃO: soma no geral e no “pilar” (mantive como está seu modelo)
+/* -----------------------------
+   REGRAS DE PONTOS + SALVAR
+------------------------------*/
 async function atualizarPonto(index, pilar, valor) {
-  if (confirm(`Confirmar +${valor} estrela(s) para ${participantes[index].nome} em ${pilar}?`)) {
+  const p = participantes[index];
+  if (!p) return;
 
-    // 1) Soma no total geral
-    participantes[index].pontos = (participantes[index].pontos || 0) + valor;
+  const sinal = valor >= 0 ? "+" : "";
+  const ok = confirm(`Confirmar ${sinal}${valor} estrela(s) para ${p.nome} em ${pilar}?`);
+  if (!ok) return;
 
-    // 2) Soma no pilar (mantém seu modelo do Sheets)
-    const mapa = {
-      'Presença': 'presenca',
-      'Bíblia': 'biblia',
-      'Revista': 'revista',
-      'Oferta': 'oferta',
-      'Visitantes': 'visitantes',
-      'Aluno Efetivo': 'efetivo',
-      'Pergunta': 'pergunta',
-      'Apoio': 'apoio'
-    };
+  // total geral (não deixa negativo)
+  const novoTotal = (p.pontos || 0) + valor;
+  p.pontos = Math.max(0, novoTotal);
 
-    const chavePilar = mapa[pilar];
-    if (chavePilar) {
-      participantes[index][chavePilar] = (participantes[index][chavePilar] || 0) + valor;
+  // por pilar (campos do Sheets)
+  const mapa = {
+    "Presença": "presenca",
+    "Bíblia": "biblia",
+    "Revista": "revista",
+    "Oferta": "oferta",
+    "Visitantes": "visitantes",
+    "Aluno Efetivo": "efetivo",
+    "Pergunta": "pergunta",
+    "Apoio": "apoio",
+  };
+
+  const chave = mapa[pilar];
+  if (chave) {
+    const novoPilar = (p[chave] || 0) + valor;
+    p[chave] = Math.max(0, novoPilar);
+  }
+
+  // som (toca apenas quando adiciona ponto)
+  if (valor > 0) {
+    const audio = document.getElementById("som-moeda");
+    if (audio) {
+      audio.currentTime = 0;
+      audio.play().catch(() => {});
     }
+  }
 
-    document.getElementById('som-moeda').play();
-    atualizarTelaAtual();
+  atualizarTelaAtual();
 
-    // 3) Envia pro Sheets
+  // envia pro Sheets
+  try {
     await fetch(URL_API, {
-      method: 'POST',
-      body: JSON.stringify(participantes[index])
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(p),
     });
+  } catch (e) {
+    console.warn("Falha ao enviar ao Sheets (ficou só local até atualizar):", e);
   }
 }
 
+/* -----------------------------
+   RENDER: RANKING GERAL (ESCALA AUTOMÁTICA)
+   - máximo do gráfico = maior pontuação atual
+   - todos proporcionais ao líder
+------------------------------*/
 function renderizarRanking() {
-  const podio = document.getElementById('podio');
-  podio.innerHTML = '';
+  const podio = document.getElementById("podio");
+  if (!podio) return;
 
-  // ✅ importante: manter o index original pra pontuar certo no modal
+  podio.innerHTML = "";
+
   const ordenados = participantes
     .map((p, index) => ({ p, index }))
     .sort((a, b) => (b.p.pontos || 0) - (a.p.pontos || 0));
 
+  const maxPoints = Math.max(0, ...ordenados.map(x => x.p.pontos || 0));
+  const VISUAL_STEPS = 40; // altura visual fixa
+
   ordenados.forEach(({ p, index }) => {
-    let estrelasHTML = '<div style="display: flex; flex-direction: column-reverse; align-items: center;">';
-    for (let i = 0; i < Math.min((p.pontos || 0), 40); i++) {
+    const total = p.pontos || 0;
+
+    // blocos proporcionais ao máximo
+    let blocos = 0;
+    if (maxPoints > 0) {
+      blocos = Math.round((total / maxPoints) * VISUAL_STEPS);
+      if (total > 0 && blocos === 0) blocos = 1; // não some visualmente
+    }
+
+    let estrelasHTML = '<div class="coluna-estrelas">';
+    for (let i = 0; i < blocos; i++) {
       estrelasHTML += `<div class="estrela-bloco"></div>`;
     }
-    estrelasHTML += '</div>';
+    estrelasHTML += "</div>";
 
     podio.innerHTML += `
       <div class="coluna-ranking">
         ${estrelasHTML}
 
-        <!-- ✅ agora a foto abre o pop-up -->
         <img 
-          src="fotos/${p.nome}.png" 
-          class="foto-ranking foto-ranking-click" 
+          src="${fotoUrlPreferida(p.nome)}"
+          class="foto-ranking foto-ranking-click"
+          data-try="1"
+          onerror="handleImageError(this, '${escapeAspas(p.nome)}')"
           onclick="abrirModalPontos(${index})"
-          onerror="this.src='https://via.placeholder.com/85?text=S/F'"
           title="Clique para pontuar"
+          alt="Foto ${escapeHtml(p.nome)}"
         >
 
         <div class="info-ranking">
-          <div class="nome-ranking">${p.nome}</div>
-          <div class="total-estrelas">${p.pontos || 0} ⭐</div>
+          <div class="nome-ranking">${escapeHtml(p.nome)}</div>
+          <div class="total-estrelas">${total} ⭐</div>
         </div>
       </div>`;
   });
 }
 
 /* -----------------------------
-   ✅ MODAL DE PONTOS
+   MODAL DE PONTOS (RANKING)
 ------------------------------*/
 function abrirModalPontos(index) {
   participanteSelecionadoIndex = index;
-  const nome = participantes[index]?.nome || "Pontuar";
-  document.getElementById('modal-nome').innerText = `Pontuar: ${nome}`;
-  document.getElementById('modal-pontos').style.display = 'flex';
+  const p = participantes[index];
+  const nome = p?.nome || "Pontuar";
+
+  const titulo = document.getElementById("modal-nome");
+  const modal = document.getElementById("modal-pontos");
+
+  if (titulo) titulo.innerText = `Pontuar: ${nome}`;
+  if (modal) modal.style.display = "flex";
 }
 
 function fecharModalPontos() {
-  document.getElementById('modal-pontos').style.display = 'none';
+  const modal = document.getElementById("modal-pontos");
+  if (modal) modal.style.display = "none";
   participanteSelecionadoIndex = null;
 }
 
@@ -164,22 +254,61 @@ function pontuarNoModal(pilar, valor) {
   atualizarPonto(participanteSelecionadoIndex, pilar, valor);
 }
 
-// fecha clicando fora do conteúdo
-document.addEventListener('click', (e) => {
-  const modal = document.getElementById('modal-pontos');
-  if (!modal) return;
-  if (modal.style.display === 'flex' && e.target === modal) {
-    fecharModalPontos();
+/* ✅ NOVO: DESFAZER (-1) */
+function desfazerUmNoModal() {
+  if (participanteSelecionadoIndex === null) return;
+
+  const p = participantes[participanteSelecionadoIndex];
+  if (!p) return;
+
+  if ((p.pontos || 0) <= 0) {
+    alert("Este adolescente já está com 0 pontos.");
+    return;
   }
+
+  const ok = confirm(`Desfazer 1 ponto de ${p.nome}? (-1 no total)`);
+  if (!ok) return;
+
+  // aqui é “desfazer rápido”: tira 1 APENAS do total (evita complicar qual pilar foi clicado errado)
+  p.pontos = Math.max(0, (p.pontos || 0) - 1);
+
+  atualizarTelaAtual();
+
+  // salva no Sheets
+  fetch(URL_API, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(p),
+  }).catch(() => {});
+}
+
+// fecha modal clicando fora
+document.addEventListener("click", (e) => {
+  const modal = document.getElementById("modal-pontos");
+  if (!modal) return;
+  if (modal.style.display === "flex" && e.target === modal) fecharModalPontos();
 });
 
-// NAVEGAÇÃO
-function irParaRankingGeral() {
-  document.getElementById('tela-principal').style.display = 'none';
-  document.getElementById('tela-ranking').style.display = 'block';
+// ESC fecha modal
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") fecharModalPontos();
+});
 
-  document.getElementById('btn-geral').style.display = 'none';
-  document.getElementById('btn-voltar').style.display = 'block';
+/* -----------------------------
+   NAVEGAÇÃO (SEM RANKING SEMANAL)
+------------------------------*/
+function irParaRankingGeral() {
+  const telaPrincipal = document.getElementById("tela-principal");
+  const telaRanking = document.getElementById("tela-ranking");
+
+  const btnGeral = document.getElementById("btn-geral");
+  const btnVoltar = document.getElementById("btn-voltar");
+
+  if (telaPrincipal) telaPrincipal.style.display = "none";
+  if (telaRanking) telaRanking.style.display = "block";
+
+  if (btnGeral) btnGeral.style.display = "none";
+  if (btnVoltar) btnVoltar.style.display = "block";
 
   renderizarRanking();
 }
@@ -187,11 +316,33 @@ function irParaRankingGeral() {
 function voltarParaInicio() {
   fecharModalPontos();
 
-  document.getElementById('tela-principal').style.display = 'block';
-  document.getElementById('tela-ranking').style.display = 'none';
+  const telaPrincipal = document.getElementById("tela-principal");
+  const telaRanking = document.getElementById("tela-ranking");
 
-  document.getElementById('btn-geral').style.display = 'block';
-  document.getElementById('btn-voltar').style.display = 'none';
+  const btnGeral = document.getElementById("btn-geral");
+  const btnVoltar = document.getElementById("btn-voltar");
+
+  if (telaPrincipal) telaPrincipal.style.display = "block";
+  if (telaRanking) telaRanking.style.display = "none";
+
+  if (btnGeral) btnGeral.style.display = "block";
+  if (btnVoltar) btnVoltar.style.display = "none";
 }
 
+/* -----------------------------
+   Helpers de segurança (HTML/aspas)
+------------------------------*/
+function escapeHtml(str) {
+  return String(str)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+function escapeAspas(str) {
+  return String(str).replaceAll("\\", "\\\\").replaceAll("'", "\\'");
+}
+
+/* Start */
 carregarDados();
